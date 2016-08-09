@@ -1,0 +1,43 @@
+<table class="table">
+     <tr>
+         <th>Employee Name</th>
+         <th>Employee Email</th>
+         <th>Employee Role</th>
+         <th>Created Date</th>
+         <th>Action</th>
+     </tr>
+     <?php foreach ($this->paginator as $data) : // <-- change here! ?>
+         <tr>
+             <td><?php echo $this->escapeHtml($data->empId);?></td>
+             <td><?php echo $this->escapeHtml($data->empEmail);?></td>
+             <td><?php echo $this->escapeHtml($data->empRole);?></td>
+             <td><?php echo $this->escapeHtml(date($listDateFormat,strtotime($data->dateCreated)));?></td>
+             <td>
+                 <a href="<?php echo $this->url('employee/default',
+                     array('controller' => 'employee','action' => 'add', 'id' => $data->id,'page' => $pagenumber));?>">Edit</a>
+                 <a href="<?php echo $this->url('employee/default',
+                     array('controller' => 'employee','action' => 'delete', 'id' => $data->id,'page' => $pagenumber));?>" onClick="return confirmDelete();">Delete</a>
+             </td>
+         </tr>
+     <?php endforeach; ?>
+ </table>
+ 
+ <?php
+ // add at the end of the file after the table
+ echo $this->paginationControl(
+     // the paginator object
+     $this->paginator,
+     // the scrolling style
+     'sliding',
+     // the partial to use to render the control
+     'partial/paginator.phtml',
+     // the route to link to when a user clicks a control link
+     array(
+         'route' => 'employee/list'
+     )
+ );
+ ?>
+ 
+<?php 
+ echo $this->headScript()->prependFile($this->basePath() . '/js/custom.js')
+?>

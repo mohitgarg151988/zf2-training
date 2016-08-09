@@ -1,0 +1,27 @@
+<?php
+$title = 'Employee Login';
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form->setAttribute('action', $this->url('login/default', array('controller' => 'index','action' => 'login')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+//echo $this->formHidden($form->get('id'));
+?>
+<div id="userId">
+	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('userId')),'<label>');?></label>
+	<?php echo $this->formelement($form->get('userId'));?>
+	<span class="error-msg" id="title_lbl"><?php echo $this->formElementErrors($form->get('userId'));?></span>
+</div>
+<div id="userPass">
+	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('userPass')),'<label>');?></label>
+	<?php echo $this->formelement($form->get('userPass'));?>
+	<span class="error-msg" id="artist_lbl"><?php echo $this->formElementErrors($form->get('userPass'));?></span>
+</div>
+<div id="artist">
+<?php echo $this->formSubmit($form->get('submitbutton'));?>
+</div>
+<?php
+echo $this->form()->closeTag();
+?>
