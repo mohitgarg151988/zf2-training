@@ -1,7 +1,17 @@
-<?php
+<?php 
 $title = 'Employee Register';
+if ($formName == 'edit'):
 ?>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><?php echo $this->translate('Edit Employee'); ?></h4>
+</div>
+<?php else : ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php endif;?>
+
 <?php
 if (!empty($id))
 	$form->setAttribute('action', $this->url('employee/default', array('controller' => 'employee','action' => 'add','id'=>$id,'page' => $pageNumber)));
@@ -11,36 +21,39 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('id'));
+echo $this->formHidden($form->get('pageNumber'));
 ?>
-<div id="empId">
+<div class="modal-body custom-inner-box_pop">
+<div id="empId-div">
 	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('empId')),'<label>');?></label>
 	<?php echo $this->formelement($form->get('empId'));?>
 	<span class="error-msg" id="empId_lbl"><?php echo $this->formElementErrors($form->get('empId'));?></span>
 </div>
 <?php if ($formName == 'add') :?>
-<div id="empPass">
+<div id="empPass-div">
 	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('empPass')),'<label>');?></label>
 	<?php echo $this->formelement($form->get('empPass'));?>
 	<span class="error-msg" id="empPass_lbl"><?php echo $this->formElementErrors($form->get('empPass'));?></span>
 </div>
-<div id="empConfirmPass">
+<div id="empConfirmPass-div">
 	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('empConfirmPass')),'<label>');?></label>
 	<?php echo $this->formelement($form->get('empConfirmPass'));?>
 	<span class="error-msg" id="empConfirmPass_lbl"><?php echo $this->formElementErrors($form->get('empConfirmPass'));?></span>
 </div>
 <?php endif;?>
-<div id="empEmail">
+<div id="empEmail-div">
 	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('empEmail')),'<label>');?></label>
 	<?php echo $this->formelement($form->get('empEmail'));?>
 	<span class="error-msg" id="empEmail_lbl"><?php echo $this->formElementErrors($form->get('empEmail'));?></span>
 </div>
-<div id="empRole">
+<div id="empRole-div">
 	<label class="popup_textfields"><?php echo strip_tags($this->formlabel($form->get('empRole')),'<label>');?></label>
 	<?php echo $this->formelement($form->get('empRole'));?>
 	<span class="error-msg" id="empRole_lbl"><?php echo $this->formElementErrors($form->get('empRole'));?></span>
 </div>
 <div id="submita">
-<?php echo $this->formSubmit($form->get('submitbutton'));?>
+<?php if ($formName == 'add') echo $this->formSubmit($form->get('submitbutton')); else echo $this->formButton($form->get('submitbutton'));?>
+</div>
 </div>
 <?php
 echo $this->form()->closeTag();

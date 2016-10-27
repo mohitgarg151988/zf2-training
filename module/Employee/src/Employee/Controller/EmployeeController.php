@@ -4,6 +4,7 @@ namespace Employee\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 use Employee\Model\Employee;
 use Employee\Form\AddForm;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
@@ -63,9 +64,22 @@ class EmployeeController extends AbstractActionController
     public function addAction()
     {
     	$viewModel = new ViewModel();
-    	$formRequest = $this->getRequest();    	
+    	$formRequest = $this->getRequest();   
+    	$allData = $this->params()->fromQuery();    	
     	$id = $this->params()->fromRoute('id', '');
+    	$id = $this->params()->fromPost('id', $id);
+    	
     	$pageNumber = $this->params()->fromRoute('page', 1);
+    	$pageNumber = $this->params()->fromPost('page', $pageNumber);
+    	
+    	if (isset($allData['id'])){
+    		$id = (int) $allData['id'];
+    	}
+    	    	
+    	if (isset($allData['page'])) {
+    		$pageNumber = $allData['page'];
+    	}
+    	
     	$formName = 'add';
     	    	
     	if (empty($id) && !isset($this->userId)) {     
@@ -84,20 +98,12 @@ class EmployeeController extends AbstractActionController
     		$this->layout()->setTemplate('employee/home_layout');
     		$formName = 'edit';
     	}
-    	
-    	$registerForm = new AddForm($formName);
-    	if ($formName == 'add'){
-    		$registerForm->get('submitbutton')->setAttribute('value','Add');
-    	} else { 
-    		$registerForm->get('submitbutton')->setAttribute('value','Update');
-    		$empData = array();
-    		if (!empty($id)) {
-    			$empData = $this->getTableObject('Employee\Model\EmployeeTable')->getEmployeeData($id);
-    		}
-    		$registerForm->setData($empData);
-    	}
+    	//echo $formName;die;
+    	$registerForm = new AddForm($formName);    	
+    	//echo $id.'------------>'.$pageNumber.'---------------->'.$formName;die;
     	
     	$messages = array();
+    	$empData = array();
     	if ($formRequest->isPost()){
     		$employee = new Employee($formName);
     		$registerForm->setInputFilter($employee->getInputFilter());
@@ -111,13 +117,28 @@ class EmployeeController extends AbstractActionController
     			} else {    				
     				$lastInsertId = $this->getTableObject('Employee\Model\EmployeeTable')->updateEmployee($employee);
     				$this->flashMessenger()->addMessage('The record has been updated');
-    				return $this->redirect()->toRoute('employee/list',array('controller' => 'employee', 'action' => 'index','page' => $pageNumber));
+    				return new JsonModel(array(
+    						'success'=> true,
+    				));
+    				//return $this->redirect()->toRoute('employee/list',array('controller' => 'employee', 'action' => 'index','page' => $pageNumber));
     			}
     			
     		} else {
+   				$empData['pageNumber'] = $pageNumber;
+    			$registerForm->setData($empData);
     			$messages = $registerForm->getMessages();    			
     		}
     	} else {
+    		if ($formName == 'add'){
+    			$registerForm->get('submitbutton')->setAttribute('value','Add');
+    		} else {
+    			$registerForm->get('submitbutton')->setAttribute('value','Update');    			
+    			if (!empty($id)) {
+    				$empData = $this->getTableObject('Employee\Model\EmployeeTable')->getEmployeeData($id);
+    				$empData['pageNumber'] = $pageNumber;
+    			}
+    			$registerForm->setData($empData);
+    		}
     		$this->flashMessenger()->clearCurrentMessages();
     	}
     	$viewModel->setVariables(
@@ -130,6 +151,10 @@ class EmployeeController extends AbstractActionController
     			'flashMessages' => $this->flashMessenger()->getMessages()
     		)
     	);
+    	
+    	if ($formName=='edit')
+    		$viewModel->setTerminal(true);
+    	
     	return $viewModel;
     }    
     

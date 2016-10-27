@@ -13,6 +13,17 @@ class AddForm extends Form
 		$this->add(array(
 			'name' => 'id',
 			'type' => 'Hidden',
+			'attributes' => array(
+				'id' => 'id'
+			)
+		));
+		
+		$this->add(array(
+			'name' => 'pageNumber',
+			'type' => 'Hidden',
+			'attributes' => array(
+				'id' => 'pageNumber'
+			)
 		));
 		
 		$this->add(
@@ -21,6 +32,9 @@ class AddForm extends Form
 				'type' => 'text',
 				'options' => array(
 					'label' => 'Employee name',
+				),
+				'attributes' => array(
+					'id' => 'empId'
 				)
 			)									
 		);
@@ -53,6 +67,9 @@ class AddForm extends Form
 				'type' => 'text',
 				'options' => array(
 					'label' => 'Employee Email',
+				),
+				'attributes' => array(
+					'id' => 'empEmail'
 				)
 			)
 		);
@@ -70,6 +87,9 @@ class AddForm extends Form
 						'PL' => 'PL',
 						'PM' => 'PM'
 					)
+				),
+				'attributes' => array(
+					'id' => 'empRole'
 				)
 			)		
 		);
@@ -82,15 +102,33 @@ class AddForm extends Form
 				)
 			)
 		);*/
-		$this->add(
-			array(
-				'name' => 'submitbutton',
-				'type' => 'submit',
-				'attributes' => array(
-					'id' => 'submitbutton',
-					'value' => 'Add'	
+		if ($name == 'edit') {
+			$this->add(
+				array(
+					'name' => 'submitbutton',
+					'type' => 'Button',
+					'options' => array(
+						'label' => 'Update'
+					),
+					'attributes' => array(
+						'id' => 'submitbutton',
+						'value' => 'Update',
+						'class' => 'btn btn-success',
+						'onclick' => ' return customSave()'
+					)
 				)
-			)
-		);
+			);
+		} else {
+			$this->add(
+				array(
+					'name' => 'submitbutton',
+					'type' => 'submit',
+					'attributes' => array(
+						'id' => 'submitbutton',
+						'value' => 'Add'	
+					)
+				)
+			);
+		}
 	}		
 }
